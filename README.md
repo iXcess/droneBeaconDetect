@@ -5,14 +5,22 @@ Most of the commercial drones uses the Open WiFi connection for easy user config
 ## Characteristics of an AP
 
 An AP will usually broadcast beacon frames. [Beacon frames] are transmitted periodically, they serve to announce the presence of a wireless LAN and to synchronise the members of the service set. It contains all the information about the network.
+
 ![Beacon frame from wireshark](https://3.bp.blogspot.com/-FKoOO4JgZPg/Tx2twnX4B9I/AAAAAAAAADU/pOI4zC1fTw4/s1600/wireshark-beacon-frame.png)
+
+These beacon frames can be captured by Wireshark to be analysed to understand in-depth. However, we will use Scapy. [Scapy] is a Python interpreter that enables you to create, forge, or decode packets on the network, to capture packets and analyze them, to dissect the packets, etc. It also allows you to inject packets into the network. It supports a wide number of network protocols and it can handle and manipulate wireless communication packets.
+
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+Hardware required :
+1. Wireless adapter which can go into monitor mode, a simple google about your laptop's wireless chipset can do. Or you can get an external [dongle which supports monitor mode]. I am using a wireless dongle with Atheros AR9271 chipset.
+
+Software required :
+1. Scapy
 
 ```
-Give examples
+pip install scapy
 ```
 
 ### Installing
@@ -53,39 +61,18 @@ Explain what these tests test and why
 Give an example
 ```
 
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Please contact me @ brandonting@hotmail.com if you feel like contributing or ask about any question.
 
 ## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
 [Beacon frames]: https://en.wikipedia.org/wiki/Beacon_frame
+[Scapy]: https://resources.infosecinstitute.com/what-is-scapy/#gref
+[dongle which supports monitor mode]: https://www.wirelesshack.org/best-kali-linux-compatible-usb-adapter-dongles.html
 
