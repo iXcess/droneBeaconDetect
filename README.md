@@ -1,11 +1,11 @@
-# Python code for drone beacon detection
-# Project Title
+# Python code for Drone Beacon Detection
 
-One Paragraph of project description goes here
+Most of the commercial drones uses the Open WiFi connection for easy user configuration. This basically means that the drone will act as an Access Point (AP) to which a controller normally a phone to connect. Open WiFi also means that most commercial and hobbyist drones uses the IEEE 802.11 protocol. 
 
-## Getting Started
+## Characteristics of an AP
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+An AP will usually broadcast beacon frames. [Beacon frames] are transmitted periodically, they serve to announce the presence of a wireless LAN and to synchronise the members of the service set. It contains all the information about the network.
+![Beacon frame from wireshark](https://3.bp.blogspot.com/-FKoOO4JgZPg/Tx2twnX4B9I/AAAAAAAAADU/pOI4zC1fTw4/s1600/wireshark-beacon-frame.png)
 
 ### Prerequisites
 
@@ -86,4 +86,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * Hat tip to anyone whose code was used
 * Inspiration
 * etc
+
+[Beacon frames]: https://en.wikipedia.org/wiki/Beacon_frame
 
