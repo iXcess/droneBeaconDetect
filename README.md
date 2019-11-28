@@ -17,11 +17,10 @@ Hardware required :
 1. Wireless adapter which can go into monitor mode, a simple google about your laptop's wireless chipset can do. Or you can get an external [dongle which supports monitor mode]. I am using a wireless dongle with Atheros AR9271 chipset.
 
 Software required :
-1. Scapy
+1. Scapy 2.4.3
 
 ```
-sudo apt-get install scapy
-sudo apt-get install ipython
+pip install scapy
 ```
 
 ## Contributing
