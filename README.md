@@ -20,7 +20,8 @@ Software required :
 1. Scapy
 
 ```
-pip install scapy
+sudo apt-get install scapy
+sudo apt-get install ipython
 ```
 
 ## Contributing
