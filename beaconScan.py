@@ -11,7 +11,7 @@ kp = 0.7                         # Probability Threshold Constant, this is the s
 kd = 3.5                         # Detection Threshold Constant, this is the average deviation threshold, decreasing this will make detection more aggresive but prone to error
 ki = 8				 # Idling Detection Threshold Constant, this is the ratio of number of times the channel is encountered over the number of encounters,
 				 # decreasing ki will decrease the time needed to filter mobile phone beacon frames
-MB_ch = 2			 # MeshBulb Operating Channel, choose a channel where there are less noise
+MB_ch = 3			 # MeshBulb Operating Channel, choose a channel where there are less noise
 
 
 #################################        GLOBAL VARIABLES       #####################################
@@ -19,12 +19,13 @@ MB_ch = 2			 # MeshBulb Operating Channel, choose a channel where there are less
 macAddrList = []		 # The list of unfiltered mac address encountered
 filteredMacList = []		 # Filtered mac address list, mac addr in this list is whitelisted
 knownVendorList = ["60:60:1f","e0:b6:f5","00:12:1c","00:26:7e","90:03:b7","90:3a:e6","a0:14:3d"] # Drone Vendor Specific Mac Addrs
-whiteList = ["b0:be:76"]	 # Known Vendor Specific Mac Addrs for home WiFi AP
+whiteList = ["b0:be:76","7c:8b:ca"]	 # Known Vendor Specific Mac Addrs for home WiFi AP
 foundDroneList = []		 # Temporary list for found drone mac addrs
 channels = []			 # List of channels where the AP is encountered
 isPacketAvail = False
 isChannelHopping = True
 availLocalizer = []		 # Temporary list to store the available ESP which contributes RSSI values
+sleepCount = 0
 
 #################################          FUNCTIONS           #######################################
 
@@ -41,10 +42,14 @@ def startMonMode(iface):
 # A function to prevent the channelHopping thread from changing the channel while getting the RSSI values from supporting MeshBulbs
 def suspendThread(iface):
     global isPacketAvail
+    global sleepCount
     os.system('iwconfig %s channel %d' % (iface, MB_ch))
     sendp(pkt[0], iface=iface)
     while isPacketAvail:
  	time.sleep(1)		 # time.sleep() function is used to suspend the thread
+	sleepCount +=1
+	if sleepCount > 20:
+	    break
 
 # Channel hopping must be done > 100ms  because beacon frames usually is sent every 100ms
 # Total of 14 channels defined for use by WiFi 802.11 2.4Ghz ISM Band
@@ -57,7 +62,7 @@ def channelHopping(iface):
 
     while isChannelHopping:
 	if len(channels) == 0:
-	    for ch in range(1,15):
+	    for ch in range(1,14):
 		os.system('iwconfig %s channel %d' % (iface, ch))
 		print "Current channel: " + str(ch)
 		time.sleep(0.220)
@@ -72,7 +77,7 @@ def channelHopping(iface):
 		    if int(beacons[6]) == ch:
 			beacons[7] += 1 
 		print "Current channel: " + str(ch)
-		time.sleep(0.250)
+		time.sleep(0.305)
 
 # Function to execute when a drone has been found
 # Because ESP sometimes can only either detect SSID or MAC Addr, so we have to send both information
@@ -112,7 +117,7 @@ def beaconFilter(kp,kd,ki):
 	    beacons[3] = 1
 	    beacons[4] = 0
 	# Filter them out as non-drones if the AP stayed static for a long time/ in white list / has 'unifi' word in it
-	if beacons[3] > 50 or beacons[0][0:8] in whiteList or "unifi" in beacons[1]:
+	if beacons[3] > 20 or beacons[0][0:8] in whiteList or "unifi" in beacons[1] or beacons[-1] > 40:
             filteredMacList.append(beacons[0])
 	    macAddrList.pop(i)
 	# If beacon frame is sent too infrequent, suspect might be a mobile phone
@@ -124,7 +129,7 @@ def beaconFilter(kp,kd,ki):
 # This function only handles incoming new packets
 def PacketHandler(packet):
     global isPacketAvail
-
+    global sleepCount
     # If it is data from ESP NOW
     if packet.subtype == 13 and packet.addr2 and isPacketAvail:
 	payload = str(packet.load).split(':')
@@ -141,11 +146,12 @@ def PacketHandler(packet):
 	        availLocalizer.remove(currentCoords)
 	    if len(availLocalizer) == 0:
 		isPacketAvail = False
-
+	    sleepCount = 0
+	    print availLocalizer
 	    print "x_coord: " + payload[-3] + " y_coord: " + payload[-4] + " RSSI: " + currentRSSI
 
     # If packet has a beacon frame
-    if packet.haslayer(Dot11Beacon):
+    if packet.haslayer(Dot11Beacon) and len(availLocalizer) == 0:
 	prob = 0
         if packet.addr2 not in filteredMacList:
 
